@@ -6,18 +6,16 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) throws SQLException, IOException, InterruptedException {
+
         Connection connection = ConnectDB.connect();
 
         String getAlbums = "src/AlbumsScraper.py";
         String getSongs = "src/SongsScraper.py";
+        String artistAlbum = "output/album_list.txt";
 
         runPythonScript(getAlbums);
         runPythonScript(getSongs);
-
-        String artistAlbum = "output/album_list.txt";
-
-//        importTracksAndAlbums(connection, artistAlbum);
-        dropAlbumTables(connection);
+        importTracksAndAlbums(connection, artistAlbum);
 
     }
 
@@ -73,25 +71,6 @@ public class Main {
             e.printStackTrace();
         }
 
-    }
-
-    private static void createAlbumsTable(Connection connection) throws SQLException {
-        String sql = "CREATE TABLE ALBUMS\n" +
-                     "(\n" +
-                     "ALBUM_ID      NUMBER CONSTRAINT pk_album_id PRIMARY KEY,\n" +
-                     "TITLE         VARCHAR2(125),\n" +
-                     "ARTIST        VARCHAR2(125),\n" +
-                     "YEAR_RELEASED NUMBER,\n" +
-                     "URL           VARCHAR2(125)\n" +
-                     ")";
-        try {
-            Statement statement = connection.createStatement();
-            statement.execute(sql);
-            System.out.println("Table successfully created");
-        } catch (SQLException e) {
-            System.out.println("An error occurred: ");
-            e.printStackTrace();
-        }
     }
 
     private static void createTable(Connection connection, String tableName) throws SQLException {
